@@ -7,14 +7,17 @@ import (
 	"os/signal"
 )
 
-const addr = ":8080"
+const serverAddr = ":8080"
+const publicFolder = "./public"
 
 func main() {
+	log.SetFlags(log.Lshortfile)
+
 	// starting server
-	h := http.FileServer(http.Dir("."))
-	log.Printf("listening on %v...", addr)
-	server := &http.Server{Addr: addr, Handler: h}
+	handler := http.FileServer(http.Dir(publicFolder))
+	server := &http.Server{Addr: serverAddr, Handler: handler}
 	go func() {
+		log.Printf("listening on %v...", serverAddr)
 		err := server.ListenAndServe()
 		if err != nil {
 			log.Fatal(err)
